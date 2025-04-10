@@ -10,9 +10,11 @@ import { Pagination, Navigation } from "swiper/modules";
 import Banner from "../components/Banner";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
+import { api } from "../services/api";
 
 export default function Home({ darkMode }) {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -21,6 +23,19 @@ export default function Home({ darkMode }) {
 
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await api.get("/products"); // Endpoint de productos
+                setProducts(response.data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        fetchProducts();
     }, []);
 
     // Mock product data (replace with API data later)
@@ -69,7 +84,7 @@ export default function Home({ darkMode }) {
                         navigation={true}
                         modules={[Pagination, Navigation]}
                     >
-                        {mockProducts.map((product) => (
+                        {products.map((product) => (
                             <SwiperSlide key={product.id}>
                                 <div className="d-flex justify-content-center">
                                     <CardProduct product={product} darkMode={darkMode} />
@@ -80,7 +95,7 @@ export default function Home({ darkMode }) {
                 ) : (
                     // 💻 Desktop: Show as a Grid
                     <div className="row justify-content-center">
-                        {mockProducts.map((product) => (
+                        {products.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
                                 <CardProduct product={product} darkMode={darkMode} />
                             </div>
@@ -100,7 +115,7 @@ export default function Home({ darkMode }) {
                         navigation={true}
                         modules={[Pagination, Navigation]}
                     >
-                        {mockProducts.map((product) => (
+                        {products.map((product) => (
                             <SwiperSlide key={product.id}>
                                 <div className="d-flex justify-content-center">
                                     <CardProduct product={product} darkMode={darkMode} />
@@ -111,7 +126,7 @@ export default function Home({ darkMode }) {
                 ) : (
                     // 💻 Desktop: Show as a Grid
                     <div className="row justify-content-center">
-                        {mockProducts.map((product) => (
+                        {products.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
                                 <CardProduct product={product} darkMode={darkMode} />
                             </div>
