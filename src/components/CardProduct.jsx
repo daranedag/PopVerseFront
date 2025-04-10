@@ -21,7 +21,7 @@ export default function CardProduct({ product, darkMode }) {
 
             {/* Image */}
             <img
-                src={product.image}
+                src={product.image_url}
                 className="card-img-top"
                 alt={product.name}
                 style={{ objectFit: "contain", height: "180px" }}

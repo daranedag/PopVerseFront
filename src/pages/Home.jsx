@@ -38,38 +38,6 @@ export default function Home({ darkMode }) {
         fetchProducts();
     }, []);
 
-    // Mock product data (replace with API data later)
-    const mockProducts = [
-        {
-            id: 1,
-            name: "POP! ACES HIGH EDDIE",
-            brand: "Iron Maiden",
-            price: "16.990",
-            image: "https://your-image-url.com/eddie.png",
-        },
-        {
-            id: 2,
-            name: "POP! SPIDER-MAN",
-            brand: "Marvel",
-            price: "17.500",
-            image: "https://your-image-url.com/spiderman.png",
-        },
-        {
-            id: 3,
-            name: "POP! GOKU ULTRA INSTINCT",
-            brand: "Dragon Ball",
-            price: "18.990",
-            image: "https://your-image-url.com/goku.png",
-        },
-        {
-            id: 4,
-            name: "POP! BATMAN",
-            brand: "DC Comics",
-            price: "19.500",
-            image: "https://your-image-url.com/batman.png",
-        },
-    ];
-
     return (
         <div>
             <HeroCarousel darkMode={darkMode} />
