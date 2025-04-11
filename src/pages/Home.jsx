@@ -71,7 +71,7 @@ export default function Home({ darkMode }) {
                     </div>
                 )}
             </div>
-            <Banner imageUrl="https://example.com/banner.jpg"/>
+            <Banner src="/banner.png"/>
             <Title text="Ofertas" size="lg" align="center" darkMode={darkMode} />
             <div className="container py-4">
                 {isMobile ? (
