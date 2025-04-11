@@ -26,10 +26,11 @@ const Category = ({ darkMode }) => {
     // Filter and sort products based on category and search term
     useEffect(() => {
         const filtered = products.filter(
-            (product) => product.category.toLowerCase() === categoryName.toLowerCase() && product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            (product) => product.category.toLowerCase() === categoryName.toLowerCase() && 
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredProducts(filtered);
-    }, [categoryName, searchTerm]);
+    }, [products, categoryName, searchTerm]);
 
     // Sorting functionality (memoized)
     const sortedProducts = useMemo(() => {
@@ -54,39 +55,39 @@ const Category = ({ darkMode }) => {
 
     return (
         <div className={`container ${darkMode ? "bg-dark text-white" : "bg-light text-dark"}`}>
-        <h1 className="text-center my-4">{categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}</h1>
+            <h1 className="text-center my-4">{categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}</h1>
 
-        {/* Search bar */}
-        <div className="mb-4">
-            <input
-            type="text"
-            className="form-control"
-            placeholder="Search for products..."
-            value={searchTerm}
-            onChange={handleSearch}
-            />
-        </div>
+            {/* Search bar */}
+            <div className="mb-4">
+                <input
+                type="text"
+                className="form-control"
+                placeholder="Search for products..."
+                value={searchTerm}
+                onChange={handleSearch}
+                />
+            </div>
 
-        {/* Sorting options */}
-        <div className="mb-4">
-            <select className="form-select" value={sortBy} onChange={handleSortChange}>
-            <option value="price">Sort by Price</option>
-            <option value="alphabetical">Sort Alphabetically</option>
-            </select>
-        </div>
+            {/* Sorting options */}
+            <div className="mb-4">
+                <select className="form-select" value={sortBy} onChange={handleSortChange}>
+                    <option value="price">Ordenar por Precio</option>
+                    <option value="alphabetical">Ordenar Alfabeticamente</option>
+                </select>
+            </div>
 
-        {/* Product grid */}
-        <div className="row">
-            {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-                <div className="col-md-4 mb-4" key={product.id}>
-                <CardProduct product={product} darkMode={darkMode} />
-                </div>
-            ))
-            ) : (
-            <p className="text-center">No products found in this category.</p>
-            )}
-        </div>
+            {/* Product grid */}
+            <div className="row">
+                {sortedProducts.length > 0 ? (
+                sortedProducts.map((product) => (
+                    <div className="col-md-4 mb-4" key={product.id}>
+                        <CardProduct product={product} darkMode={darkMode} />
+                    </div>
+                ))
+                ) : (
+                <p className="text-center">No products found in this category.</p>
+                )}
+            </div>
         </div>
     );
 };

@@ -6,11 +6,19 @@ import { useAuth } from "../context/AuthContext"; // Your authentication context
 import "../assets/css/Navbar.css";
 export default function Navbar({ darkMode, setDarkMode }) {
     const { cart, removeFromCart } = useCart();
-    const { user, logout } = useAuth(); 
+    const { user, logout } = useAuth();
+    const [searchTerm, setSearchTerm] = useState("");
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
     
     const navigate = useNavigate();
     const location = useLocation();
+
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        if (searchTerm.trim() !== "") {
+            navigate(`/search?q=${searchTerm}`); // Redirect to search results
+        }
+    };
 
     const handleLogout = () => {
         logout();  // Call logout function
@@ -73,7 +81,12 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 </div>
         
                 <div className="d-flex align-items-center w-100 gap-2 mb-2">
-                    <input className={`form-control ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="text" placeholder="Buscador"/>
+                    <form onSubmit={handleSearchSubmit} className="d-flex w-100">
+                        <input className={`form-control ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="text" placeholder="Buscador" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+                        <button className={`btn ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="submit">
+                            <i className="bi bi-search"></i>
+                        </button>
+                    </form>
                     <button className={`btn position-relative  ${darkMode ? "text-white" : "text-dark"} `} data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
                         <i className="bi bi-cart"></i>
                         {cartCount > 0 && (
@@ -115,7 +128,12 @@ export default function Navbar({ darkMode, setDarkMode }) {
                         <div className="container mt-2">
                             <div className="d-flex justify-content-center">
                                 <div className="input-group" style={{ maxWidth: "800px", width: "100%" }}>
-                                    <input className={`form-control text-center fs-5 border-0 ${darkMode ? "bg-light" : "bg-outline"}`} type="text" placeholder="Buscador" aria-label="Search"/>
+                                <form onSubmit={handleSearchSubmit} className="d-flex w-100">
+                                    <input className={`form-control ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="text" placeholder="Buscador" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+                                    <button className={`btn ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="submit">
+                                        <i className="bi bi-search"></i>
+                                    </button>
+                                </form>
                                 </div>
                             </div>
                         </div>

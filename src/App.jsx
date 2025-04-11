@@ -10,6 +10,7 @@ import Category from "./components/Category";
 import EditProfile from "./pages/EditProfile";
 import OrderHistory from "./pages/OrderHistory";
 import Checkout from "./pages/Checkout";
+import SearchResults from "./pages/SearchResults";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/wishlist" element={<Wishlist />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/orderHistory" element={<OrderHistory />} />
+                        <Route path="/search" element={<SearchResults darkMode={darkMode} />} />
                         <Route path="/checkout" element={<PrivateRoute element={<Checkout />} />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/editProfile" element={<EditProfile />} />
