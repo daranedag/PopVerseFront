@@ -175,12 +175,12 @@ export default function Navbar({ darkMode, setDarkMode }) {
                     ) : (
                         cart.map((item) => (
                             <div key={item.id} className="d-flex justify-content-between align-items-center mb-2">
-                                <img src={item.image} alt={item.name} style={{ width: "50px", height: "50px" }}/>
+                                <img src={item.image_url} alt={item.name} style={{ width: "50px", height: "50px" }}/>
                                 <span>
                                     {item.name} x{item.quantity}
                                 </span>
                                 <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(item.id)}>
-                                    ❌
+                                    <i className="bi bi-trash text-white"></i>
                                 </button>
                             </div>
                         ))
