@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import HeroCarousel from "../components/HeroCarousel";
 import Title from "../components/Title";
 import CardProduct from "../components/CardProduct";
+import DiscountCardProduct from "../components/DiscountCardProduct";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -15,6 +16,8 @@ import { api } from "../services/api";
 export default function Home({ darkMode }) {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [products, setProducts] = useState([]);
+    const [recentProducts, setRecentProducts] = useState([]);
+    const [discountProducts, setDiscountProducts] = useState([]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -30,6 +33,18 @@ export default function Home({ darkMode }) {
             try {
                 const response = await api.get("/products"); // Endpoint de productos
                 setProducts(response.data);
+
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+                const recentProducts = response.data.filter((product) => {
+                    const createdAt = new Date(product.created_at);
+                    return createdAt >= sevenDaysAgo;
+                });
+
+                const discProducts = response.data.filter((product) => product.discount > 0);
+                setDiscountProducts(discProducts);
+                setRecentProducts(recentProducts);
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -52,7 +67,7 @@ export default function Home({ darkMode }) {
                         navigation={true}
                         modules={[Pagination, Navigation]}
                     >
-                        {products.map((product) => (
+                        {recentProducts.map((product) => (
                             <SwiperSlide key={product.id}>
                                 <div className="d-flex justify-content-center">
                                     <CardProduct product={product} darkMode={darkMode} />
@@ -63,7 +78,7 @@ export default function Home({ darkMode }) {
                 ) : (
                     // 💻 Desktop: Show as a Grid
                     <div className="row justify-content-center">
-                        {products.map((product) => (
+                        {recentProducts.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
                                 <CardProduct product={product} darkMode={darkMode} />
                             </div>
@@ -83,10 +98,10 @@ export default function Home({ darkMode }) {
                         navigation={true}
                         modules={[Pagination, Navigation]}
                     >
-                        {products.map((product) => (
+                        {discountProducts.map((product) => (
                             <SwiperSlide key={product.id}>
                                 <div className="d-flex justify-content-center">
-                                    <CardProduct product={product} darkMode={darkMode} />
+                                    <DiscountCardProduct product={product} darkMode={darkMode} />
                                 </div>
                             </SwiperSlide>
                         ))}
@@ -94,9 +109,9 @@ export default function Home({ darkMode }) {
                 ) : (
                     // 💻 Desktop: Show as a Grid
                     <div className="row justify-content-center">
-                        {products.map((product) => (
+                        {discountProducts.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
-                                <CardProduct product={product} darkMode={darkMode} />
+                                <DiscountCardProduct product={product} darkMode={darkMode} />
                             </div>
                         ))}
                     </div>
