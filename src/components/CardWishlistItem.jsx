@@ -1,17 +1,40 @@
 import React from "react";
+import { api } from "../services/api";
 import "../assets/css/CardProduct.css";
 
 export default function CardWishlistItem({ product, darkMode }) {
+
+    const handleWishlistClick = async (id) => {
+        const token = localStorage.getItem("token"); // Obtén el token del almacenamiento local
+
+        try {
+            // Si el usuario está logueado, realiza la llamada a la API para agregar el producto a favoritos
+            await api.delete(
+                `/favorites/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Incluye el token en las cabeceras
+                    },
+                }
+            );
+            alert("Producto quitado de tu lista de deseos.");
+        } catch (error) {
+            console.error("Error al quitar el producto de favoritos:", error);
+            alert("Hubo un error al quitar el producto de tu lista de deseos.");
+        }
+    };
+
     return (
         <div
             className={`card shadow-sm border-0 rounded-4 p-3 d-flex align-items-center ${
                 darkMode ? "bg-dark text-white" : "bg-white text-dark"
             }`}
             style={{ maxWidth: "900px" }}
+            key={product.sku}
         >
             {/* Wishlist Heart */}
             <div className="position-absolute top-0 end-0 p-2">
-                <button className="btn border-0">
+                <button className="btn border-0" onClick={() => handleWishlistClick(product.id)}>
                     <i className={`bi bi-heart fs-4 ${darkMode ? "text-white" : "text-dark"}`}></i>
                 </button>
             </div>

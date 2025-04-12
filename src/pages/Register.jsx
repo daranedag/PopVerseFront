@@ -1,19 +1,30 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { api } from "../services/api"; 
 
-import "../assets/css/Login.css";
+import "../assets/css/Register.css";
 
 export default function Register({ darkMode }) {
+    const navigate = useNavigate();
+    const handleSubmit = async (values) => {
+        try {
+            await api.post("/auth/register", values);
+            alert("Usuario registrado exitosamente");
+            navigate("/login"); 
+        } catch (error) {
+            console.error("Error registering user:", error);
+        }
+    };
     // Validation Schema with Yup
     const validationSchema = Yup.object({
-        name: Yup.string().required("First name is required"),
-        lastName: Yup.string().required("Last name is required"),
-        email: Yup.string().email("Invalid email format").required("Email is required"),
-        password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+        name: Yup.string().required("Nombre es requerido"),
+        email: Yup.string().email("Invalid email format").required("Email requerido"),
+        password: Yup.string().min(6, "Contraseña debe tener al menos 6 caracteres").required("Contraseña es requerida"),
         confirmPassword: Yup.string()
-            .oneOf([Yup.ref("password"), null], "Passwords must match")
-            .required("Confirm password is required"),
+            .oneOf([Yup.ref("password"), null], "Contraseñas deben coincidir")
+            .required("Confirmar contraseña es requerido"),
     });
 
     return (
@@ -32,10 +43,10 @@ export default function Register({ darkMode }) {
                     <div className="flex-grow-1 w-100">
                         <h2 className="text-center mb-4">Crea tu Cuenta</h2>
                         <Formik
-                            initialValues={{ name: "", lastName: "", email: "", password: "", confirmPassword: "" }}
+                            initialValues={{ name: "", email: "", password: "", confirmPassword: "" }}
                             validationSchema={validationSchema}
                             onSubmit={(values) => {
-                                console.log("Form Submitted:", values);
+                                handleSubmit(values);
                             }}
                         >
                             {({ isSubmitting }) => (

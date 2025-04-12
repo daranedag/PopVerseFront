@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { UserContext } from "../context/UserContext";
+import { api } from "../services/api";
 
 import "../assets/css/CardProduct.css";
 
@@ -8,6 +11,9 @@ export default function CardProduct({ product, darkMode }) {
     const [isFav, setIsFav] = useState(false);
     const { addToCart } = useCart();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const { token } = useContext(UserContext)
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleResize = () => {
@@ -18,11 +24,35 @@ export default function CardProduct({ product, darkMode }) {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const handleWishlistClick = async (id) => {
+        
+        if (!token) {
+            alert("Por favor inicia sesión para agregar productos a tu lista de deseos.");
+            navigate("/login");
+            return;
+        }
+
+        try {
+            // Si el usuario está logueado, realiza la llamada a la API para agregar el producto a favoritos
+            const response = await api.post(
+                "/favorites",
+                { product_id: id },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setIsFav(!isFav);
+        } catch (error) {
+            console.error("Error al agregar el producto a favoritos:", error);
+        }
+    };
 
     return (
         <div className={`card custom-card border-0 rounded-4 p-3 d-flex flex-column ${ darkMode ? "bg-dark text-white card-shadow-light" : "bg-white text-dark"}`} style={{ width: "250px", height: isMobile ? "370px" : "420px",}}>
             {/* Wishlist Heart */}
-            <div onClick={() => setIsFav(!isFav)} style={{ cursor: "pointer" }} className="position-absolute top-0 end-0 m-2 fs-5">
+            <div onClick={() => handleWishlistClick(product.id)} style={{ cursor: "pointer" }} className="position-absolute top-0 end-0 m-2 fs-5">
                 {isFav ? (
                     <FaHeart className="text-danger" />
                 ) : (
