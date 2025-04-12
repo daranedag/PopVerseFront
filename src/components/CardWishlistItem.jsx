@@ -28,7 +28,7 @@ export default function CardWishlistItem({ product, darkMode }) {
 
             {/* Details */}
             <div className="card-body d-flex flex-column ms-3 text-center">
-                <h6 className="text-uppercase fw-light">{product.brand}</h6>
+                <h6 className="text-uppercase fw-light">{product.category}</h6>
                 <h5 className="fw-bold">{product.name}</h5>
                 <p className="fs-5 fw-bold">
                     {new Intl.NumberFormat(navigator.language, {

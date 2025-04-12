@@ -1,46 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext"; // Your authentication context
+import { UserContext } from "../context/UserContext";
 
 import "../assets/css/Navbar.css";
+
 export default function Navbar({ darkMode, setDarkMode }) {
     const { cart, removeFromCart } = useCart();
-    const { user, logout } = useAuth();
+    const { token, logout } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState("");
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-    
     const navigate = useNavigate();
-    const location = useLocation();
 
     const handleSearchSubmit = (event) => {
         event.preventDefault();
         if (searchTerm.trim() !== "") {
-            navigate(`/search?q=${searchTerm}`); // Redirect to search results
+            navigate(`/search?q=${searchTerm}`);
         }
     };
 
     const handleLogout = () => {
-        logout();  // Call logout function
-        navigate("/"); // Redirect to home after logout
+        logout(); 
+        navigate("/");
     };
 
     const handleProtectedRoute = (path) => {
-        if (!user) {
-            navigate("/login", { state: { from: path } }); // Redirect to login with the intended path
-        } else {
+        if (token) {
             navigate(path);
+        } else {
+            navigate("/login", { state: { from: path } });
         }
     };
 
     useEffect(() => {
-        // Apply dark/light mode to the body
         if (darkMode) {
-        document.body.classList.add("bg-dark", "text-light");
-        document.body.classList.remove("bg-light", "text-dark");
+            document.body.classList.add("bg-dark", "text-light");
+            document.body.classList.remove("bg-light", "text-dark");
         } else {
-        document.body.classList.add("bg-light", "text-dark");
-        document.body.classList.remove("bg-dark", "text-light");
+            document.body.classList.add("bg-light", "text-dark");
+            document.body.classList.remove("bg-dark", "text-light");
         }
     }, [darkMode]);
 
@@ -64,14 +62,14 @@ export default function Navbar({ darkMode, setDarkMode }) {
                             <i className="bi bi-list fs-3"></i>
                         </button>
             
-                        {user ? (
-                            <button className="btn btn-danger btn-sm" onClick={handleLogout}>
-                                Logout
-                            </button>
-                        ) : (
-                            <Link className={`btn  ${darkMode ? "text-white" : "text-dark"} `} to="/login">
-                                Login
-                            </Link>
+                        {token ? (
+                                <button className="btn btn-danger btn-sm" onClick={handleLogout}>
+                                    Logout
+                                </button>
+                            ) : (
+                                <Link className={`btn  ${darkMode ? "text-white" : "text-dark"} `} to="/login">
+                                    Login
+                                </Link>
                         )}
                     </div>
             
@@ -127,7 +125,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                     <div className="collapse navbar-collapse d-flex align-items-center justify-content-between" id="navbarTogglerDemo03">
                         <div className="container mt-2">
                             <div className="d-flex justify-content-center">
-                                <div className="input-group" style={{ maxWidth: "800px", width: "100%" }}>
+                                <div className="input-group searchbar">
                                 <form onSubmit={handleSearchSubmit} className="d-flex w-100">
                                     <input className={`form-control ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="text" placeholder="Buscador" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
                                     <button className={`btn ${darkMode ? "bg-light text-dark" : "bg-white text-dark"}`} type="submit">
@@ -139,8 +137,8 @@ export default function Navbar({ darkMode, setDarkMode }) {
                         </div>
             
                         <div className="d-flex align-items-center gap-2 ms-auto">
-                            {user ? (
-                                <button className="btn btn-danger" onClick={handleLogout}>
+                            {token ? (
+                                <button className="btn btn-danger btn-sm" onClick={handleLogout}>
                                     Logout
                                 </button>
                             ) : (
@@ -193,7 +191,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
                     ) : (
                         cart.map((item) => (
                             <div key={item.id} className="d-flex justify-content-between align-items-center mb-2">
-                                <img src={item.image_url} alt={item.name} style={{ width: "50px", height: "50px" }}/>
+                                <img src={item.image_url} className="imgCart" alt={item.name}/>
                                 <span>
                                     {item.name} x{item.quantity}
                                 </span>

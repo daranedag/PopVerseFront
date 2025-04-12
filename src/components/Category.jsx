@@ -62,7 +62,7 @@ const Category = ({ darkMode }) => {
                 <input
                 type="text"
                 className="form-control"
-                placeholder="Search for products..."
+                placeholder="Filtrar productos..."
                 value={searchTerm}
                 onChange={handleSearch}
                 />

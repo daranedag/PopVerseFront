@@ -9,7 +9,6 @@ export default function HeroCarousel({ darkMode }) {
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" className={darkMode ? "active dark-indicator" : "active light-indicator"}></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" className={darkMode ? "dark-indicator" : "light-indicator"}></button>
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" className={darkMode ? "dark-indicator" : "light-indicator"}></button>
-                {/* <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" className={darkMode ? "dark-indicator" : "light-indicator"}></button> */}
             </div>
 
             {/* Carousel Items */}
@@ -23,9 +22,6 @@ export default function HeroCarousel({ darkMode }) {
                 <div className="carousel-item">
                     <img src="/hero3.png" className="d-block w-100 img-fluid" alt="Hero Image 3" />
                 </div>
-                {/*<div className="carousel-item">
-                    <img src="/images/hero4.jpg" className="d-block w-100" alt="Hero Image 4" />
-                </div>*/}
             </div>
 
             {/* Navigation Arrows */}

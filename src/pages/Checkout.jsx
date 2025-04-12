@@ -1,25 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
+import { UserContext } from "../context/UserContext";
+import { CartContext } from "../context/CartContext";
 
 export default function Checkout() {
-    const { user } = useAuth();
-    const { cart, total } = useCart();
+    const { token } = useContext(UserContext)
+    const { cart, total } = useContext(CartContext);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!user) {
+        if (!token) {
             navigate("/login");
         }
-    }, [user, navigate]);
+    }, [token, navigate]);
+
+    
 
     return (
         <div className="container py-5">
             <h2 className="mb-4 text-center">Checkout</h2>
 
             {cart.length === 0 ? (
-                <div className="alert alert-warning text-center">Your cart is empty.</div>
+                <div className="alert alert-warning text-center">Carro vacio</div>
             ) : (
                 <>
                     <div className="table-responsive">

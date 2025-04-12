@@ -1,30 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Order from "../components/Order"; // Import the Order component
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { api } from "../services/api";
 
 const OrderHistory = () => {
-    // Mock orders (replace with API data in real implementation)
-    const [orders, setOrders] = useState([
-        {
-            id: 101,
-            date: "20-03-2024",
-            total: 120.50,
-            status: "Completada",
-            items: [
-                { id: 1, name: "POP! Spider-Man", price: 30.00, quantity: 2 },
-                { id: 2, name: "POP! Batman", price: 60.50, quantity: 1 },
-            ],
-        },
-        {
-            id: 102,
-            date: "18-03-2024",
-            total: 45.99,
-            status: "Pendiente",
-            items: [
-                { id: 3, name: "POP! Iron Man", price: 45.99, quantity: 1 },
-            ],
-        },
-    ]);
+    const { token } = useContext(UserContext)
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await api.get("/orders", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setOrders(response.data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        fetchOrders();
+    }, []);
 
     return (
         <div className="container mt-4 d-flex">
@@ -44,7 +43,7 @@ const OrderHistory = () => {
                 </ul>
             </div>
             <div className="col-md-9 p-3">
-                <h2>Historial de compras</h2>
+                <h1>Historial de compras</h1>
                 <div className="d-flex flex-column gap-3">
                     {orders.length > 0 ? (
                         orders.map((order) => <Order key={order.id} order={order} />)

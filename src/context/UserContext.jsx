@@ -6,7 +6,7 @@ export const UserContext = createContext()
 export const UserProvider = ({ children }) => {
     const [token, setToken] = useState(null)
     const [email, setEmail] = useState(null)
-    const API_URL = import.meta.env.API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const login = async(email, password) => {
         try {
@@ -14,11 +14,9 @@ export const UserProvider = ({ children }) => {
             const { token, email: userEmail } = response.data
             setToken(token)
             setEmail(userEmail)
-            alert("Sesión iniciada")
             return true
         }
         catch(error){
-            alert("Error: ", error)
             return false
         }
     };
@@ -57,7 +55,6 @@ export const UserProvider = ({ children }) => {
     const logout = () => {
         setToken(null)
         setEmail(null)
-        alert("Sesión cerrada")
     };
 
     return(

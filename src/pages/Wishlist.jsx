@@ -1,26 +1,31 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState, useEffect } from "react";
 import CardWishlistItem from "../components/CardWishlistItem";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { api } from "../services/api"; 
 
-const mockProducts = [
-    {
-        id: 1,
-        name: "POP! ACES HIGH EDDIE",
-        brand: "Iron Maiden",
-        price: "16990",
-        image: "https://your-image-url.com/eddie.png",
-    },
-    {
-        id: 2,
-        name: "POP! SPIDER-MAN",
-        brand: "Marvel",
-        price: "17500",
-        image: "https://your-image-url.com/spiderman.png",
-    },
-];
 
 const Wishlist = () => {
+    const { token } = useContext(UserContext);
+    const [favs, setFavs] = useState([]);
+    useEffect(() => {
+
+        const wishlistProducts = async () => {
+            try {
+                const response = await api.get("/favorites", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setFavs(response.data.favorites);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        wishlistProducts();
+    }, []);
+
     return (
         <div className="container mt-4 d-flex">
             {/* Sidebar Menu */}
@@ -43,13 +48,17 @@ const Wishlist = () => {
             <div className="col-md-9 p-3">
                 <h1>Wishlist</h1>
                 <div className="d-flex flex-column gap-3">
-                    {mockProducts.map((product) => (
-                        <CardWishlistItem
-                            key={product.id}
-                            product={product}
-                            darkMode={false} // Adjust darkMode based on user preferences
-                        />
-                    ))}
+                    {favs.length > 0 ? (
+                        favs.map((product) => (
+                            <CardWishlistItem
+                                key={product.id}
+                                product={product.name}
+                                darkMode={false}
+                            />
+                        ))
+                    ) : (
+                        <p>No hay favoritos para el usuario</p>
+                    )}
                 </div>
             </div>
         </div>

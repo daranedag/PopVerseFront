@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { UserContext } from "../context/UserContext";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -10,7 +10,7 @@ import "../assets/css/Login.css";
 export default function Login({ darkMode }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login } = useAuth();
+    const { login } = useContext(UserContext)
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -22,14 +22,14 @@ export default function Login({ darkMode }) {
         if (success) {
             navigate(from); // Redirect to the page they tried to access
         } else {
-            alert("Invalid credentials");
+            alert("Credenciales invalidas");
         }
     };
 
     // Validation Schema with Yup
     const validationSchema = Yup.object({
-        email: Yup.string().email("Invalid email").required("Email is required"),
-        password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+        email: Yup.string().email("Email invalido").required("Email es requerido"),
+        password: Yup.string().min(6, "Contraseña debe ser al menos de 6 caracteres").required("Contraseña es requerida"),
     });
 
     return (
@@ -55,18 +55,11 @@ export default function Login({ darkMode }) {
                                 if (success) {
                                     navigate(from);
                                 } else {
-                                    alert("Invalid credentials");
+                                    alert("Credenciales invalidas");
                                 }
                                 setSubmitting(false);
                             }}
                         >
-                        {/* <Formik
-                            initialValues={{ email: "", password: "", rememberMe: false }}
-                            validationSchema={validationSchema}
-                            onSubmit={(values) => {
-                                console.log("Form Submitted:", values);
-                            }}
-                        > */}
                             {({ isSubmitting }) => (
                                 <Form className="w-100">
                                     {/* Email Input */}
@@ -76,30 +69,19 @@ export default function Login({ darkMode }) {
                                             type="email" 
                                             name="email" 
                                             className="form-control"
-                                            placeholder="Enter your email"
                                         />
                                         <ErrorMessage name="email" component="div" className="text-danger small mt-1" />
                                     </div>
 
                                     {/* Password Input */}
                                     <div className="mb-3">
-                                        <label className="form-label">Password</label>
+                                        <label className="form-label">Contraseña</label>
                                         <Field 
                                             type="password" 
                                             name="password" 
                                             className="form-control"
-                                            placeholder="Enter your password"
                                         />
                                         <ErrorMessage name="password" component="div" className="text-danger small mt-1" />
-                                    </div>
-
-                                    {/* Remember Me & Forgot Password */}
-                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                        <label className="form-check-label">
-                                            <Field type="checkbox" name="rememberMe" className="form-check-input me-2" />
-                                            Remember Me
-                                        </label>
-                                        <a href="#" className="text-primary small">Forgot Password?</a>
                                     </div>
 
                                     {/* Login Button */}
@@ -108,7 +90,7 @@ export default function Login({ darkMode }) {
                                         className="btn btn-primary w-100"
                                         disabled={isSubmitting}
                                     >
-                                        {isSubmitting ? "Logging in..." : "Login"}
+                                        {isSubmitting ? "Iniciando sesion" : "Login"}
                                     </button>
                                 </Form>
                             )}
@@ -116,7 +98,7 @@ export default function Login({ darkMode }) {
                         {/* Link to Register */}
                         <div className="text-center mt-3">
                             <p>
-                                If you are not registered, <a href="/register" className="text-primary">click here</a>
+                                Si no esta registrado, <a href="/register" className="text-primary">click aqui</a>
                             </p>
                         </div>
                     </div>
