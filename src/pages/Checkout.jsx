@@ -2,10 +2,12 @@ import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
+import { jwtDecode } from "jwt-decode";
+import { api } from "../services/api"; 
 
 export default function Checkout() {
     const { token } = useContext(UserContext)
-    const { cart, total } = useContext(CartContext);
+    const { cart, total, clearCart } = useContext(CartContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,7 +16,63 @@ export default function Checkout() {
         }
     }, [token, navigate]);
 
-    
+    const fetchUserId = async (token) => {
+        try{
+            const response = await api.get("/auth/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.id;
+        }
+        catch (error){
+            console.error("Error al decodificar el token:", error);
+            return null;
+        }
+    };
+
+    const calculateDiscountedPrice = (price, discount) => {
+        return discount ? price - (price * discount / 100) : price;
+    }
+    const handleCheckout = async () => {
+        try{
+            const userId = await fetchUserId(token);
+            if (!userId) {
+                alert("Error al obtener el ID del usuario");
+                return;
+            }
+
+            const orderItems = cart.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity,
+                price: calculateDiscountedPrice(item.price, item.discount),
+                discount: item.discount || 0,
+            }));
+
+            const totalAmount = orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+            const orderData = {
+                user_id: userId,
+                product_ids: orderItems,
+                total_price: totalAmount,
+                status: "pending",
+            };
+            
+            const response = await api.post("/orders", orderData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            alert("Compra realizada con exito");
+            clearCart();
+            navigate("/orderHistory");
+        }
+        catch(error){
+            console.error("Error al realizar la compra:", error);
+            alert("Error al realizar la compra");
+        }
+    };
 
     return (
         <div className="container py-5">
@@ -30,27 +88,41 @@ export default function Checkout() {
                                 <tr>
                                     <th>Producto</th>
                                     <th>Precio</th>
+                                    <th>Descuento</th>
+                                    <th>Precio Final</th>
                                     <th>Cantidad</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {cart.map((item) => (
-                                    <tr key={item.id}>
-                                        <td>{item.name}</td>
-                                        <td>
-                                            {new Intl.NumberFormat(navigator.language, {
-                                                style: "currency",
-                                                currency: "CLP",
-                                            }).format(item.price)}</td>
-                                        <td>{item.quantity}</td>
-                                        <td>
-                                            {new Intl.NumberFormat(navigator.language, {
-                                                style: "currency",
-                                                currency: "CLP",
-                                            }).format(item.price * item.quantity)}</td>
-                                    </tr>
-                                ))}
+                                {cart.map((item) => {
+                                    const discountedPrice = calculateDiscountedPrice(item.price, item.discount);
+                                    return (
+                                        <tr key={item.id}>
+                                            <td>{item.name}</td>
+                                            <td>
+                                                {new Intl.NumberFormat(navigator.language, {
+                                                    style: "currency",
+                                                    currency: "CLP",
+                                                }).format(item.price)}
+                                            </td>
+                                            <td>{item.discount ? `${item.discount}%` : "Sin descuento"}</td>
+                                            <td>
+                                                {new Intl.NumberFormat(navigator.language, {
+                                                    style: "currency",
+                                                    currency: "CLP",
+                                                }).format(discountedPrice)}
+                                            </td>
+                                            <td>{item.quantity}</td>
+                                            <td>
+                                                {new Intl.NumberFormat(navigator.language, {
+                                                    style: "currency",
+                                                    currency: "CLP",
+                                                }).format(discountedPrice * item.quantity)}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -62,10 +134,18 @@ export default function Checkout() {
                                 {new Intl.NumberFormat(navigator.language, {
                                     style: "currency",
                                     currency: "CLP",
-                                }).format(total)}
+                                }).format(
+                                    cart.reduce(
+                                        (acc, item) =>
+                                            acc +
+                                            calculateDiscountedPrice(item.price, item.discount) *
+                                                item.quantity,
+                                        0
+                                    )
+                                )}
                             </span>
                         </h4>
-                        <button className="btn btn-success btn-lg">Pagar ahora</button>
+                        <button className="btn btn-success btn-lg" onClick={() => handleCheckout()}>Pagar ahora</button>
                     </div>
                 </>
             )}

@@ -1,11 +1,40 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { api } from "../services/api";
 
 const Order = ({ order }) => {
+    const [items, setItems] = useState([]);
+    const token = useContext(UserContext);
+
+    useEffect(() => {
+        const fetchOrderItems = async () => {
+            try{
+                const response = await api.get(`/orders/${order.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token.token}`,
+                        },
+                    }
+                );
+                setItems(response.data);
+            }
+            catch (error) {
+                console.error("Error al obtener los detalles de la orden:", error);
+            }
+        };
+        fetchOrderItems();
+    }, [order.id, token]);
+
+    const formatDate = (dateString) => {
+        const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
+        return new Intl.DateTimeFormat("es-ES", options).format(new Date(dateString));
+    };
+
     return (
         <div className="card mb-3">
             <div className="card-body">
-                <h5 className="card-title">Order #{order.id}</h5>
-                <p><strong>Date:</strong> {order.date}</p>
+                <h5 className="card-title">Orden #{order.id}</h5>
+                <p><strong>Fecha de compra:</strong> {formatDate(order.created_at)}</p>
                 <p>
                     <strong>Total:</strong>
                     {new Intl.NumberFormat(navigator.language, {
@@ -13,19 +42,17 @@ const Order = ({ order }) => {
                             currency: "CLP",
                     }).format(order.total)}
                 </p>
-                
-                <p><strong>Status:</strong> {order.status}</p>
 
                 <h6>Items:</h6>
                 <ul className="list-group">
-                    {order.items.map((item) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between">
+                    {items.map((item) => (
+                        <li key={item.product_id} className="list-group-item d-flex justify-content-between">
                             <span>{item.name}</span>
                             <span>
                                 {new Intl.NumberFormat(navigator.language, {
                                     style: "currency",
                                     currency: "CLP",
-                                }).format(item.price)} x {item.quantity}
+                                }).format(item.subtotal)} x {item.quantity}
                             </span>
                         </li>
                     ))}
