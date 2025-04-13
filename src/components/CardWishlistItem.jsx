@@ -2,9 +2,11 @@ import React, { useContext, useState, useEffect } from "react";
 import { api } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import "../assets/css/CardProduct.css";
+import { useCart } from "../context/CartContext";
 
 export default function CardWishlistItem({ product, darkMode }) {
     const { token } = useContext(UserContext);
+    const { addToCart } = useCart();
     const [favs, setFavs] = useState([]);
 
     const handleWishlistClick = async (id) => {
@@ -64,6 +66,7 @@ export default function CardWishlistItem({ product, darkMode }) {
                 </p>
                 <button
                     className={`btn w-100 fw-bold ${darkMode ? "btn-light text-dark" : "btn-primary text-white"}`}
+                    onClick={() => addToCart(product)}
                 >
                     Añadir al Carro
                 </button>

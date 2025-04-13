@@ -56,7 +56,15 @@ export default function Checkout() {
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mt-4">
-                        <h4>Total: <span className="fw-bold">${total.toFixed(2)}</span></h4>
+                        <h4>
+                            Total:
+                            <span className="fw-bold">
+                                {new Intl.NumberFormat(navigator.language, {
+                                    style: "currency",
+                                    currency: "CLP",
+                                }).format(total)}
+                            </span>
+                        </h4>
                         <button className="btn btn-success btn-lg">Pagar ahora</button>
                     </div>
                 </>
