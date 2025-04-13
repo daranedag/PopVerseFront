@@ -9,7 +9,6 @@ const Wishlist = () => {
     const { token } = useContext(UserContext);
     const [favs, setFavs] = useState([]);
     useEffect(() => {
-
         const wishlistProducts = async () => {
             try {
                 const response = await api.get("/favorites", {
@@ -52,7 +51,7 @@ const Wishlist = () => {
                         favs.map((product) => (
                             <CardWishlistItem
                                 key={product.id}
-                                product={product.name}
+                                product={product}
                                 darkMode={false}
                             />
                         ))

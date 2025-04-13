@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { api } from "../services/api";
+import { UserContext } from "../context/UserContext";
 import "../assets/css/CardProduct.css";
 
 export default function CardWishlistItem({ product, darkMode }) {
+    const { token } = useContext(UserContext);
+    const [favs, setFavs] = useState([]);
 
     const handleWishlistClick = async (id) => {
-        const token = localStorage.getItem("token"); // Obtén el token del almacenamiento local
-
         try {
             // Si el usuario está logueado, realiza la llamada a la API para agregar el producto a favoritos
             await api.delete(
@@ -18,6 +19,8 @@ export default function CardWishlistItem({ product, darkMode }) {
                 }
             );
             alert("Producto quitado de tu lista de deseos.");
+            // Actualiza la lista de favoritos en el estado
+            setFavs((prevFavs) => prevFavs.filter((item) => item.id !== id));
         } catch (error) {
             console.error("Error al quitar el producto de favoritos:", error);
             alert("Hubo un error al quitar el producto de tu lista de deseos.");
@@ -31,7 +34,7 @@ export default function CardWishlistItem({ product, darkMode }) {
             }`}
             style={{ maxWidth: "900px" }}
             key={product.sku}
-        >
+        >   
             {/* Wishlist Heart */}
             <div className="position-absolute top-0 end-0 p-2">
                 <button className="btn border-0" onClick={() => handleWishlistClick(product.id)}>
