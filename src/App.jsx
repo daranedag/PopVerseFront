@@ -14,6 +14,7 @@ import { NotFound } from "./components/NotFound";
 import { UserProvider } from "./context/UserContext";
 import { CartProvider } from "./context/CartContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { ProductDetails } from "./pages/ProductDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import { AdminRoute } from "./routes/AdminRoute";
 import { ToastContainer } from "react-toastify";
@@ -46,6 +47,7 @@ function App() {
                         <Route path="/" element={<Home darkMode={darkMode} />} />
                         <Route path="/login" element={<Login darkMode={darkMode}/>} />
                         <Route path="/register" element={<Register darkMode={darkMode}/>} />
+                        <Route path="/product/:id" element={<ProductDetails darkMode={darkMode} />} />
                         <Route path="/search" element={<SearchResults darkMode={darkMode} />} />
                         <Route path="/category/:categoryName" element={<Category darkMode={darkMode} />} />
                         <Route element={<ProtectedRoute />}>

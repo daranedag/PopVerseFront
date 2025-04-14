@@ -91,6 +91,10 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
         return price * (1 - discount / 100);
     };
 
+    const handleNavigateToDetails = () => {
+        navigate(`/product/${product.id}`);
+    }
+
     const handleAddToCart = (product) => {
         addToCart(product);
         const cartOffcanvasEl = document.getElementById("cartOffcanvas");
@@ -139,7 +143,7 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
             )}
 
             {/* Imagen */}
-            <div className="text-center mb-3" style={{ height: "180px" }}>
+            <div className="text-center mb-3" style={{ height: "180px", cursor: "pointer" }} onClick={handleNavigateToDetails}>
                 <img
                     src={product.image_url}
                     alt={product.name}
