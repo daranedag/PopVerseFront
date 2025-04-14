@@ -15,12 +15,20 @@ import { api } from "../services/api";
 
 export default function Home({ darkMode }) {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [slidesPerView, setSlidesPerView] = useState(getSlidesPerView());
     const [products, setProducts] = useState([]);
     const [recentProducts, setRecentProducts] = useState([]);
     const [discountProducts, setDiscountProducts] = useState([]);
 
+    function getSlidesPerView() {
+        const width = window.innerWidth;
+        if(width < 768) return 2;
+        if(width < 992) return 3;
+        return 4;
+    }
     useEffect(() => {
         const handleResize = () => {
+            setSlidesPerView(getSlidesPerView());
             setIsMobile(window.innerWidth < 768);
         };
 
@@ -58,12 +66,11 @@ export default function Home({ darkMode }) {
             <HeroCarousel darkMode={darkMode} />
             <Title text="New Arrivals" size="lg" align="center" darkMode={darkMode} />
             <div className="container py-4">
-                {isMobile ? (
-                    // 📌 Mobile: Show as a Swiper Carousel
                     <Swiper
                         spaceBetween={10}
-                        slidesPerView={1.2} // Show part of the next slide
-                        pagination={{ clickable: true }}
+                        slidesPerView={slidesPerView}
+                        slidesPerGroup={1}
+                        pagination={false}
                         navigation={true}
                         modules={[Pagination, Navigation]}
                     >
@@ -75,16 +82,14 @@ export default function Home({ darkMode }) {
                             </SwiperSlide>
                         ))}
                     </Swiper>
-                ) : (
-                    // 💻 Desktop: Show as a Grid
-                    <div className="row justify-content-center">
+
+                    {/* <div className="row justify-content-center">
                         {recentProducts.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
                                 <CardProduct product={product} darkMode={darkMode} />
                             </div>
                         ))}
-                    </div>
-                )}
+                    </div> */}
             </div>
             <Banner src="/banner.png"/>
             <Title text="Ofertas" size="lg" align="center" darkMode={darkMode} />
@@ -94,7 +99,7 @@ export default function Home({ darkMode }) {
                     <Swiper
                         spaceBetween={10}
                         slidesPerView={1.2} // Show part of the next slide
-                        pagination={{ clickable: true }}
+                        pagination={false}
                         navigation={true}
                         modules={[Pagination, Navigation]}
                     >

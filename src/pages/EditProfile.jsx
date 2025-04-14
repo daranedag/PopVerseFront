@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import SidebarAccount from "../components/SidebarAccount.jsx";
 import { api } from "../services/api"; 
 
-const EditProfile = () => {
+const EditProfile = ({ darkMode }) => {
     const { token } = useContext(UserContext)
     const [formData, setFormData] = useState({});
 
@@ -26,7 +27,8 @@ const EditProfile = () => {
 
     useEffect(() => {
         if (token) {
-            setFormData({ ...token})
+            // setFormData({ ...token})
+            setFormData((prev) => ({ ...prev }));
         }
     }, [token]);
 
@@ -45,27 +47,13 @@ const EditProfile = () => {
             setFormData(response.data);
             alert("Perfil actualizado correctamente");
         } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Error obteniendo datos de usuario:", error);
         }
     };
 
     return (
         <div className="container mt-4 d-flex">
-            {/* Sidebar Menu */}
-            <div className="col-md-3 p-3 border-end">
-                <h4>Mi Cuenta</h4>
-                <ul className="list-group">
-                    <li className="list-group-item active">
-                        <Link to="/editProfile" className="text-decoration-none text-white">Editar Perfil</Link>
-                    </li>
-                    <li className="list-group-item">
-                        <Link to="/orderHistory" className="text-decoration-none">Historial de Órdenes</Link>
-                    </li>
-                    <li className="list-group-item">
-                        <Link to="/wishlist" className="text-decoration-none">Wishlist</Link>
-                    </li>
-                </ul>
-            </div>
+            <SidebarAccount darkMode={darkMode} />
             <div className="col-md-9 p-3">
                 <h2>Editar Perfil</h2>
                 <form onSubmit={handleSubmit} className="mt-3">

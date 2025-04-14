@@ -2,10 +2,11 @@ import React, { useContext, useState, useEffect } from "react";
 import CardWishlistItem from "../components/CardWishlistItem";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import SidebarAccount from "../components/SidebarAccount";
 import { api } from "../services/api"; 
 
 
-const Wishlist = () => {
+const Wishlist = ({ darkMode }) => {
     const { token } = useContext(UserContext);
     const [favs, setFavs] = useState([]);
     useEffect(() => {
@@ -27,21 +28,7 @@ const Wishlist = () => {
 
     return (
         <div className="container mt-4 d-flex">
-            {/* Sidebar Menu */}
-            <div className="col-md-3 p-3 border-end">
-                <h4>Mi Cuenta</h4>
-                <ul className="list-group">
-                    <li className="list-group-item">
-                        <Link to="/editProfile" className="text-decoration-none">Editar Perfil</Link>
-                    </li>
-                    <li className="list-group-item">
-                        <Link to="/orderHistory" className="text-decoration-none">Historial de Órdenes</Link>
-                    </li>
-                    <li className="list-group-item active">
-                        <Link to="/wishlist" className="text-decoration-none text-white">Wishlist</Link>
-                    </li>
-                </ul>
-            </div>
+            <SidebarAccount activePage="wishlist" darkMode={darkMode} />
 
             {/* Wishlist Items */}
             <div className="col-md-9 p-3">
@@ -52,7 +39,7 @@ const Wishlist = () => {
                             <CardWishlistItem
                                 key={product.id}
                                 product={product}
-                                darkMode={false}
+                                darkMode={darkMode}
                             />
                         ))
                     ) : (

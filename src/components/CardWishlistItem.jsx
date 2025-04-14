@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { api } from "../services/api";
 import { UserContext } from "../context/UserContext";
-import "../assets/css/CardProduct.css";
 import { useCart } from "../context/CartContext";
+
+import "../assets/css/CardWishlistProduct.css";
 
 export default function CardWishlistItem({ product, darkMode }) {
     const { token } = useContext(UserContext);
@@ -11,17 +12,15 @@ export default function CardWishlistItem({ product, darkMode }) {
 
     const handleWishlistClick = async (id) => {
         try {
-            // Si el usuario está logueado, realiza la llamada a la API para agregar el producto a favoritos
             await api.delete(
                 `/favorites/${id}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Incluye el token en las cabeceras
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
             alert("Producto quitado de tu lista de deseos.");
-            // Actualiza la lista de favoritos en el estado
             setFavs((prevFavs) => prevFavs.filter((item) => item.id !== id));
         } catch (error) {
             console.error("Error al quitar el producto de favoritos:", error);
@@ -32,9 +31,11 @@ export default function CardWishlistItem({ product, darkMode }) {
     return (
         <div
             className={`card shadow-sm border-0 rounded-4 p-3 d-flex align-items-center ${
-                darkMode ? "bg-dark text-white" : "bg-white text-dark"
+                darkMode ? "bg-dark text-white card-dark-mode" : "bg-white text-dark"
             }`}
-            style={{ maxWidth: "900px" }}
+            style={{ maxWidth: "900px",
+                boxShadow: darkMode ? "0 4px 20px rgba(255, 255, 255, 0.2)" : "none",
+             }}
             key={product.sku}
         >   
             {/* Wishlist Heart */}

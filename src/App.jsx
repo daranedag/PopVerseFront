@@ -25,15 +25,15 @@ function App() {
                     <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
                     <Routes>
                         <Route path="/" element={<Home darkMode={darkMode} />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                        <Route path="/login" element={<Login darkMode={darkMode}/>} />
+                        <Route path="/register" element={<Register darkMode={darkMode}/>} />
                         <Route path="/search" element={<SearchResults darkMode={darkMode} />} />
                         <Route path="/category/:categoryName" element={<Category darkMode={darkMode} />} />
                         <Route element={<ProtectedRoute />}>
-                            <Route path="/editProfile" element={<EditProfile />} />
-                            <Route path="/orderHistory" element={<OrderHistory />} />
-                            <Route path="/checkout" element={<Checkout />} />
-                            <Route path="/wishlist" element={<Wishlist />} />
+                            <Route path="/editProfile" element={<EditProfile darkMode={darkMode}/>} />
+                            <Route path="/orderHistory" element={<OrderHistory darkMode={darkMode}/>} />
+                            <Route path="/checkout" element={<Checkout darkMode={darkMode}/>} />
+                            <Route path="/wishlist" element={<Wishlist darkMode={darkMode}/>} />
                         </Route>
                         <Route path="*" element={<NotFound/>} />
                     </Routes>

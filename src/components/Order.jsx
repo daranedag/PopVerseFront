@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { api } from "../services/api";
 
-const Order = ({ order }) => {
+const Order = ({ order, darkMode }) => {
     const [items, setItems] = useState([]);
     const token = useContext(UserContext);
 
@@ -31,7 +31,7 @@ const Order = ({ order }) => {
     };
 
     return (
-        <div className="card mb-3">
+        <div className={`card mb-3 ${darkMode ? "bg-dark text-white border-light" : ""}`}>
             <div className="card-body">
                 <h5 className="card-title">Orden #{order.id}</h5>
                 <p><strong>Fecha de compra:</strong> {formatDate(order.created_at)}</p>
@@ -46,7 +46,7 @@ const Order = ({ order }) => {
                 <h6>Items:</h6>
                 <ul className="list-group">
                     {items.map((item) => (
-                        <li key={item.product_id} className="list-group-item d-flex justify-content-between">
+                        <li key={item.product_id} className={`list-group-item d-flex justify-content-between ${darkMode ? "bg-dark text-white border-light" : ""}`}>
                             <span>{item.name}</span>
                             <span>
                                 {new Intl.NumberFormat(navigator.language, {
