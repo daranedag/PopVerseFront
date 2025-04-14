@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { UserContext } from "../context/UserContext";
+import CardProductCart from "./CardProductCart";
 
 import "../assets/css/Navbar.css";
 
@@ -188,17 +189,13 @@ export default function Navbar({ darkMode, setDarkMode }) {
                 <div className="offcanvas-body">
                     {cart.length === 0 ? (
                         <p>Tu carrito está vacío</p>
-                    ) : (
-                        cart.map((item) => (
-                            <div key={item.id} className="d-flex justify-content-between align-items-center mb-2">
-                                <img src={item.image_url} className="imgCart" alt={item.name}/>
-                                <span>
-                                    {item.name} x{item.quantity}
-                                </span>
-                                <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(item.id)}>
-                                    <i className="bi bi-trash text-white"></i>
-                                </button>
-                            </div>
+                        ) : (
+                            cart.map((item) => (
+                            <CardProductCart
+                            key={item.id}
+                            item={item}
+                            darkMode={darkMode}
+                            />
                         ))
                     )}
                     <button className="btn btn-success w-100 mt-3" onClick={() => handleProtectedRoute("/checkout")}>

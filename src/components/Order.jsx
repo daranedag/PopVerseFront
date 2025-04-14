@@ -44,19 +44,23 @@ const Order = ({ order, darkMode }) => {
                 </p>
 
                 <h6>Items:</h6>
-                <ul className="list-group">
-                    {items.map((item) => (
-                        <li key={item.product_id} className={`list-group-item d-flex justify-content-between ${darkMode ? "bg-dark text-white border-light" : ""}`}>
-                            <span>{item.name}</span>
-                            <span>
-                                {new Intl.NumberFormat(navigator.language, {
-                                    style: "currency",
-                                    currency: "CLP",
-                                }).format(item.subtotal)} x {item.quantity}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+                {items.length > 0 ? (
+                    <ul className={`list-group ${darkMode ? "bg-dark" : ""}`}>
+                        {items.map((item) => (
+                            <li key={item.product_id} className={`list-group-item d-flex justify-content-between ${darkMode ? "bg-dark text-white border-light" : ""}`}>
+                                <span>{item.name}</span>
+                                <span>
+                                    {new Intl.NumberFormat(navigator.language, {
+                                        style: "currency",
+                                        currency: "CLP",
+                                    }).format(item.subtotal)} x {item.quantity}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-muted">Esta orden no tiene productos.</p>
+                )}
             </div>
         </div>
     );
