@@ -15,6 +15,10 @@ import { UserProvider } from "./context/UserContext";
 import { CartProvider } from "./context/CartContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 function App() {
     const [darkMode, setDarkMode] = useState(false);
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import HeroCarousel from "../components/HeroCarousel";
 import Title from "../components/Title";
 import CardProduct from "../components/CardProduct";
-import DiscountCardProduct from "../components/DiscountCardProduct";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -82,14 +81,6 @@ export default function Home({ darkMode }) {
                             </SwiperSlide>
                         ))}
                     </Swiper>
-
-                    {/* <div className="row justify-content-center">
-                        {recentProducts.map((product) => (
-                            <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
-                                <CardProduct product={product} darkMode={darkMode} />
-                            </div>
-                        ))}
-                    </div> */}
             </div>
             <Banner src="/banner.png"/>
             <Title text="Ofertas" size="lg" align="center" darkMode={darkMode} />
@@ -98,7 +89,7 @@ export default function Home({ darkMode }) {
                     // 📌 Mobile: Show as a Swiper Carousel
                     <Swiper
                         spaceBetween={10}
-                        slidesPerView={1.2} // Show part of the next slide
+                        slidesPerView={1.2}
                         pagination={false}
                         navigation={true}
                         modules={[Pagination, Navigation]}
@@ -106,7 +97,7 @@ export default function Home({ darkMode }) {
                         {discountProducts.map((product) => (
                             <SwiperSlide key={product.id}>
                                 <div className="d-flex justify-content-center">
-                                    <DiscountCardProduct product={product} darkMode={darkMode} />
+                                    <CardProduct product={product} darkMode={darkMode} />
                                 </div>
                             </SwiperSlide>
                         ))}
@@ -116,7 +107,7 @@ export default function Home({ darkMode }) {
                     <div className="row justify-content-center">
                         {discountProducts.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">
-                                <DiscountCardProduct product={product} darkMode={darkMode} />
+                                <CardProduct product={product} darkMode={darkMode} />
                             </div>
                         ))}
                     </div>

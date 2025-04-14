@@ -3,12 +3,11 @@ import { api } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import { useCart } from "../context/CartContext";
 
-import "../assets/css/CardWishlistProduct.css";
+import "../assets/css/CardWishlistItem.css";
 
-export default function CardWishlistItem({ product, darkMode }) {
+export default function CardWishlistItem({ product, darkMode, removeFromFavorites }) {
     const { token } = useContext(UserContext);
     const { addToCart } = useCart();
-    const [favs, setFavs] = useState([]);
 
     const handleWishlistClick = async (id) => {
         try {
@@ -21,7 +20,7 @@ export default function CardWishlistItem({ product, darkMode }) {
                 }
             );
             alert("Producto quitado de tu lista de deseos.");
-            setFavs((prevFavs) => prevFavs.filter((item) => item.id !== id));
+            removeFromFavorites(id);
         } catch (error) {
             console.error("Error al quitar el producto de favoritos:", error);
             alert("Hubo un error al quitar el producto de tu lista de deseos.");
@@ -66,7 +65,7 @@ export default function CardWishlistItem({ product, darkMode }) {
                     }).format(product.price)}
                 </p>
                 <button
-                    className={`btn w-100 fw-bold ${darkMode ? "btn-light text-dark" : "btn-primary text-white"}`}
+                    className={`btn add-to-cart-btn fw-bold ${darkMode ? "btn-light text-dark" : "btn-primary text-white"}`}
                     onClick={() => addToCart(product)}
                 >
                     Añadir al Carro

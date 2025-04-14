@@ -7,69 +7,140 @@ import { api } from "../services/api";
 
 import "../assets/css/CardProduct.css";
 
-export default function CardProduct({ product, darkMode }) {
+export default function CardProduct({ product, darkMode, removeFromFavorites }) {
     const [isFav, setIsFav] = useState(false);
-    const { addToCart } = useCart();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-    const { token } = useContext(UserContext)
-
+    const { addToCart } = useCart();
+    const { token } = useContext(UserContext);
     const navigate = useNavigate();
 
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);
         };
-    
+
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        const checkIfFavorite = async () => {
+            if (!token) return;
+
+            try {
+                const response = await api.get("/favorites", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const favorites = response.data.favorites || [];
+                const isFavorite = favorites.some((fav) => fav.id === product.id);
+                setIsFav(isFavorite);
+            } catch (error) {
+                console.error("Error al verificar favoritos:", error);
+            }
+        };
+
+        checkIfFavorite();
+    }, [token, product.id]);
+
     const handleWishlistClick = async (id) => {
-        
         if (!token) {
-            alert("Por favor inicia sesión para agregar productos a tu lista de deseos.");
+            alert("Por favor inicia sesión para gestionar tu lista de deseos.");
             navigate("/login");
             return;
         }
 
         try {
-            // Si el usuario está logueado, realiza la llamada a la API para agregar el producto a favoritos
-            const response = await api.post(
-                "/favorites",
-                { product_id: id },
-                {
+            if (isFav) {
+                // Eliminar de favoritos
+                await api.delete(`/favorites/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                }
-            );
+                });
+                alert("Producto eliminado de tu lista de deseos.");
+                removeFromFavorites(id);
+            } else {
+                // Agregar a favoritos
+                await api.post(
+                    "/favorites",
+                    { product_id: id },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                alert("Producto agregado a tu lista de deseos.");
+            }
+
+            // Alternar el estado de favorito
             setIsFav(!isFav);
         } catch (error) {
-            console.error("Error al agregar el producto a favoritos:", error);
+            console.error("Error al gestionar el producto en favoritos:", error);
+            alert("Hubo un error al gestionar el producto en tu lista de deseos.");
         }
     };
 
+    const calculateDiscountedPrice = (price, discount) => {
+        return price * (1 - discount / 100);
+    };
+
     return (
-        <div className={`card custom-card border-0 rounded-4 p-3 d-flex flex-column ${ darkMode ? "bg-dark text-white card-shadow-light" : "bg-white text-dark"}`} style={{ width: "250px", height: isMobile ? "370px" : "420px",}}>
+        <div
+            className={`card custom-card border-0 rounded-4 p-3 d-flex flex-column ${
+                darkMode ? "bg-dark text-white card-shadow-light" : "bg-white text-dark"
+            }`}
+            style={{
+                width: "250px",
+                height: isMobile ? "370px" : "420px",
+            }}
+        >
             {/* Wishlist Heart */}
-            <div onClick={() => handleWishlistClick(product.id)} style={{ cursor: "pointer" }} className="position-absolute top-0 end-0 m-2 fs-5">
-                {isFav ? (
-                    <FaHeart className="text-danger" />
-                ) : (
-                    <FaRegHeart className="text-secondary" />
-                )}
+            <div
+                onClick={() => handleWishlistClick(product.id)}
+                style={{ cursor: "pointer" }}
+                className="position-absolute top-0 end-0 m-2 fs-5"
+            >
+                {isFav ? <FaHeart className="text-danger" /> : <FaRegHeart className="text-secondary" />}
             </div>
+
+            {/* Badge de descuento */}
+            {product.discount > 0 && (
+                <div className="position-absolute top-0 start-0 m-2">
+                    <span
+                        className={`badge ${
+                            darkMode ? "bg-danger text-white" : "bg-warning text-dark"
+                        } fs-6 fw-bold`}
+                        style={{
+                            padding: "10px 15px",
+                            borderRadius: "10px",
+                            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                        }}
+                    >
+                        -{product.discount}%
+                    </span>
+                </div>
+            )}
 
             {/* Imagen */}
             <div className="text-center mb-3" style={{ height: "180px" }}>
-                <img src={product.image_url} alt={product.name} style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }} className="rounded-3"/>
+                <img
+                    src={product.image_url}
+                    alt={product.name}
+                    style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}
+                    className="rounded-3"
+                />
             </div>
 
             {/* Contenido con botón abajo */}
             <div className="d-flex flex-column justify-content-between flex-grow-1">
                 <div className="text-center">
                     <h6 className="text-uppercase fw-light fs-6 text-truncate">{product.category}</h6>
-                    <h5 className="fw-bold fs-6"
+                    <h5
+                        className="fw-bold fs-6"
                         style={{
                             overflow: "hidden",
                             textOverflow: "ellipsis",
@@ -81,12 +152,45 @@ export default function CardProduct({ product, darkMode }) {
                     >
                         {product.name}
                     </h5>
-                    <p className="fs-6 fw-bold mb-3">
-                        {new Intl.NumberFormat(navigator.language, {
-                            style: "currency",
-                            currency: "CLP",
-                        }).format(product.price)}
-                    </p>
+
+                    {/* Precios */}
+                    <div className="mb-3">
+                        {product.discount > 0 ? (
+                            <>
+                                {/* Precio original tachado */}
+                                <p
+                                    className={`fs-6 fw-bold mb-1 ${
+                                        darkMode ? "text-light" : "text-muted"
+                                    }`}
+                                    style={{ textDecoration: "line-through" }}
+                                >
+                                    {new Intl.NumberFormat(navigator.language, {
+                                        style: "currency",
+                                        currency: "CLP",
+                                    }).format(product.price)}
+                                </p>
+
+                                {/* Precio con descuento */}
+                                <p
+                                    className={`fs-5 fw-bold ${
+                                        darkMode ? "text-warning" : "text-danger"
+                                    }`}
+                                >
+                                    {new Intl.NumberFormat(navigator.language, {
+                                        style: "currency",
+                                        currency: "CLP",
+                                    }).format(calculateDiscountedPrice(product.price, product.discount))}
+                                </p>
+                            </>
+                        ) : (
+                            <p className="fs-5 fw-bold">
+                                {new Intl.NumberFormat(navigator.language, {
+                                    style: "currency",
+                                    currency: "CLP",
+                                }).format(product.price)}
+                            </p>
+                        )}
+                    </div>
                 </div>
 
                 <button

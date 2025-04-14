@@ -46,19 +46,29 @@ const Order = ({ order, darkMode }) => {
                 <h6>Items:</h6>
                 {items.length > 0 ? (
                     <ul className={`list-group ${darkMode ? "bg-dark" : ""}`}>
-                        {items.map((item) => (
-                            <li key={item.product_id} className={`list-group-item d-flex justify-content-between ${darkMode ? "bg-dark text-white border-light" : ""}`}>
-                                <span>{item.name}</span>
-                                <span>
-                                    {new Intl.NumberFormat(navigator.language, {
-                                        style: "currency",
-                                        currency: "CLP",
-                                    }).format(item.subtotal)} x {item.quantity}
-                                </span>
-                            </li>
-                        ))}
+                        {items.map((item) => {
+                            const discountedPrice = item.discount
+                                ? item.price * (1 - item.discount / 100)
+                                : item.price;
+
+                            return (
+                                <li
+                                    key={item.product_id}
+                                    className={`list-group-item d-flex justify-content-between ${darkMode ? "bg-dark text-white border-light" : ""}`}
+                                >
+                                    <span>{item.name}</span>
+                                    <span>
+                                        {new Intl.NumberFormat(navigator.language, {
+                                            style: "currency",
+                                            currency: "CLP",
+                                        }).format(discountedPrice)}
+                                        x {item.quantity}
+                                    </span>
+                                </li>
+                            );
+                        })}
                     </ul>
-                ) : (
+                ): (
                     <p className="text-muted">Esta orden no tiene productos.</p>
                 )}
             </div>

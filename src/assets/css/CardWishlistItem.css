@@ -24,3 +24,7 @@ body.bg-dark .swiper-button-prev::after {
     box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2) !important;
     transition: box-shadow 0.3s ease;
 }
+
+.add-to-cart-btn{
+    width: 100%;
+}

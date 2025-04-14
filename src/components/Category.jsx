@@ -26,7 +26,6 @@ const Category = ({ darkMode }) => {
     useEffect(() => {
         const filtered = products.filter(
             (product) =>
-                product.discount === 0 || product.discount === null &&
                 product.category.toLowerCase() === categoryName.toLowerCase() &&
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
