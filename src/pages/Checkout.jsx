@@ -49,7 +49,12 @@ export default function Checkout() {
                 discount: item.discount || 0,
             }));
 
-            const totalAmount = orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            const totalAmount = cart.reduce(
+                (acc, item) =>
+                    acc +
+                    calculateDiscountedPrice(item.price, item.discount) * item.quantity,
+                0
+            );
 
             const orderData = {
                 user_id: userId,

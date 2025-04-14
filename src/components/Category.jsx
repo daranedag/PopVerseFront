@@ -4,16 +4,16 @@ import CardProduct from "../components/CardProduct"; // Import your CardProduct 
 import { api } from "../services/api";
 
 const Category = ({ darkMode }) => {
-    const { categoryName } = useParams(); // Capture the category name from the URL
+    const { categoryName } = useParams();
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [sortBy, setSortBy] = useState("price"); // Default sorting by price
-    const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering
+    const [sortBy, setSortBy] = useState("price");
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await api.get("/products"); // Endpoint de productos
+                const response = await api.get("/products");
                 setProducts(response.data);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -23,16 +23,16 @@ const Category = ({ darkMode }) => {
         fetchProducts();
     }, []);
 
-    // Filter and sort products based on category and search term
     useEffect(() => {
         const filtered = products.filter(
-            (product) => product.category.toLowerCase() === categoryName.toLowerCase() && 
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            (product) =>
+                product.discount === 0 || product.discount === null &&
+                product.category.toLowerCase() === categoryName.toLowerCase() &&
+                product.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredProducts(filtered);
     }, [products, categoryName, searchTerm]);
 
-    // Sorting functionality (memoized)
     const sortedProducts = useMemo(() => {
         const sorted = [...filteredProducts];
         if (sortBy === "price") {
@@ -43,12 +43,10 @@ const Category = ({ darkMode }) => {
         return sorted;
     }, [filteredProducts, sortBy]);
 
-    // Handle search term change
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
     };
 
-    // Handle sort option change
     const handleSortChange = (event) => {
         setSortBy(event.target.value);
     };
@@ -85,7 +83,7 @@ const Category = ({ darkMode }) => {
                     </div>
                 ))
                 ) : (
-                <p className="text-center">No products found in this category.</p>
+                <p className="text-center">No se encontraron productos en esta categoria.</p>
                 )}
             </div>
         </div>
