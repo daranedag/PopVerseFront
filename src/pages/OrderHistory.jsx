@@ -14,6 +14,7 @@ const OrderHistory = ({ darkMode })  => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
+                setLoading(true);
                 const response = await api.get("/orders", {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -35,10 +36,16 @@ const OrderHistory = ({ darkMode })  => {
             <SidebarAccount activePage="orderHistory" darkMode={darkMode} />
             <div className="col-md-9 p-3">
                 <h1>Historial de compras</h1>
-                {loading && <p>Cargando órdenes...</p>}
-    
+                {loading && (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                )}
+
                 {!loading && error && <p className="text-danger">{error}</p>}
-    
+
                 {!loading && !error && orders.length > 0 && (
                     <div className="d-flex flex-column gap-3">
                         {orders.map((order) => (
@@ -46,7 +53,7 @@ const OrderHistory = ({ darkMode })  => {
                         ))}
                     </div>
                 )}
-    
+
                 {!loading && !error && orders.length === 0 && (
                     <p>No hay compras realizadas.</p>
                 )}

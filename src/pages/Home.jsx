@@ -18,6 +18,7 @@ export default function Home({ darkMode }) {
     const [products, setProducts] = useState([]);
     const [recentProducts, setRecentProducts] = useState([]);
     const [discountProducts, setDiscountProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     function getSlidesPerView() {
         const width = window.innerWidth;
@@ -38,6 +39,7 @@ export default function Home({ darkMode }) {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                setLoading(true);
                 const response = await api.get("/products"); // Endpoint de productos
                 setProducts(response.data);
 
@@ -54,6 +56,8 @@ export default function Home({ darkMode }) {
                 setRecentProducts(recentProducts);
             } catch (error) {
                 console.error("Error fetching products:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -65,6 +69,13 @@ export default function Home({ darkMode }) {
             <HeroCarousel darkMode={darkMode} />
             <Title text="New Arrivals" size="lg" align="center" darkMode={darkMode} />
             <div className="container py-4">
+                {loading ? (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                ) : (
                     <Swiper
                         spaceBetween={10}
                         slidesPerView={slidesPerView}
@@ -81,12 +92,18 @@ export default function Home({ darkMode }) {
                             </SwiperSlide>
                         ))}
                     </Swiper>
+                )}
             </div>
             <Banner src="/banner.png"/>
             <Title text="Ofertas" size="lg" align="center" darkMode={darkMode} />
             <div className="container py-4">
-                {isMobile ? (
-                    // 📌 Mobile: Show as a Swiper Carousel
+                {loading ? (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                ) : isMobile ? (
                     <Swiper
                         spaceBetween={10}
                         slidesPerView={1.2}
@@ -103,7 +120,6 @@ export default function Home({ darkMode }) {
                         ))}
                     </Swiper>
                 ) : (
-                    // 💻 Desktop: Show as a Grid
                     <div className="row justify-content-center">
                         {discountProducts.map((product) => (
                             <div key={product.id} className="col-md-4 d-flex justify-content-center mb-4">

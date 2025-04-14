@@ -3,7 +3,7 @@ import "../assets/css/HeroCarousel.css";
 
 export default function HeroCarousel({ darkMode }) {
     return (
-        <div id="heroCarousel" className="carousel slide" data-bs-ride="carousel">
+        <div id="heroCarousel" className="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
             {/* Carousel Indicators */}
             <div className="carousel-indicators">
                 <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" className={darkMode ? "active dark-indicator" : "active light-indicator"}></button>

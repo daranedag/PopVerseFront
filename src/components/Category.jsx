@@ -9,14 +9,18 @@ const Category = ({ darkMode }) => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [sortBy, setSortBy] = useState("price");
     const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+                setLoading(true);
                 const response = await api.get("/products");
                 setProducts(response.data);
             } catch (error) {
                 console.error("Error fetching products:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -74,17 +78,25 @@ const Category = ({ darkMode }) => {
             </div>
 
             {/* Product grid */}
-            <div className="row">
-                {sortedProducts.length > 0 ? (
-                sortedProducts.map((product) => (
-                    <div className="col-md-4 mb-4" key={product.id}>
-                        <CardProduct product={product} darkMode={darkMode} />
+            {loading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Cargando...</span>
                     </div>
-                ))
-                ) : (
-                <p className="text-center">No se encontraron productos en esta categoria.</p>
-                )}
-            </div>
+                </div>
+            ) : (
+                <div className="row">
+                    {sortedProducts.length > 0 ? (
+                        sortedProducts.map((product) => (
+                            <div className="col-md-4 mb-4" key={product.id}>
+                                <CardProduct product={product} darkMode={darkMode} />
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center">No se encontraron productos en esta categoria.</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

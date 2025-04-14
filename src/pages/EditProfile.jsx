@@ -7,10 +7,12 @@ import { api } from "../services/api";
 const EditProfile = ({ darkMode }) => {
     const { token } = useContext(UserContext)
     const [formData, setFormData] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const userData = async () => {
             try {
+                setLoading(true);
                 const response = await api.get("/auth/profile", {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -19,15 +21,16 @@ const EditProfile = ({ darkMode }) => {
                 setFormData(response.data);
             } catch (error) {
                 console.error("Error fetching user data:", error);
+            } finally {
+                setLoading(false); // Finaliza el estado de carga
             }
         };
 
         userData();
-    }, []);
+    }, [token]);
 
     useEffect(() => {
         if (token) {
-            // setFormData({ ...token})
             setFormData((prev) => ({ ...prev }));
         }
     }, [token]);
@@ -56,30 +59,38 @@ const EditProfile = ({ darkMode }) => {
             <SidebarAccount darkMode={darkMode} />
             <div className="col-md-9 p-3">
                 <h2>Editar Perfil</h2>
-                <form onSubmit={handleSubmit} className="mt-3">
-                    <div className="mb-3">
-                        <label className="form-label">Nombre</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="name"
-                            value={formData.name || ""}
-                            onChange={handleChange}
-                        />
+                {loading ? (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
                     </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="mt-3">
+                        <div className="mb-3">
+                            <label className="form-label">Nombre</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="name"
+                                value={formData.name || ""}
+                                onChange={handleChange}
+                            />
+                        </div>
 
-                    <div className="mb-3">
-                        <label className="form-label">Email</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            name="email"
-                            value={formData.email || ""}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-primary">Guardar Cambios</button>
-                </form>
+                        <div className="mb-3">
+                            <label className="form-label">Email</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                name="email"
+                                value={formData.email || ""}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary">Guardar Cambios</button>
+                    </form>
+                )}
             </div>
         </div>
     );

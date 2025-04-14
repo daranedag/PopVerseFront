@@ -9,10 +9,12 @@ import { api } from "../services/api";
 const Wishlist = ({ darkMode }) => {
     const { token } = useContext(UserContext);
     const [favs, setFavs] = useState([]);
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
         const wishlistProducts = async () => {
             try {
+                setLoading(true);
                 const response = await api.get("/favorites", {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -21,11 +23,13 @@ const Wishlist = ({ darkMode }) => {
                 setFavs(response.data.favorites);
             } catch (error) {
                 console.error("Error obteniendo favoritos:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         wishlistProducts();
-    }, []);
+    }, [token]);
 
     const removeFromFavorites = (id) => {
         setFavs((prev) => prev.filter((product) => product.id !== id));
@@ -38,20 +42,28 @@ const Wishlist = ({ darkMode }) => {
             {/* Wishlist Items */}
             <div className="col-md-9 p-3">
                 <h1>Wishlist</h1>
-                <div className="d-flex row gap-3 justify-content-center">
-                    {favs.length > 0 ? (
-                        favs.map((product) => (
-                            <CardProduct
-                                key={product.id}
-                                product={product}
-                                darkMode={darkMode}
-                                removeFromFavorites={removeFromFavorites}
-                            />
-                        ))
-                    ) : (
-                        <p>No hay favoritos para el usuario</p>
-                    )}
-                </div>
+                {loading ? (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                        <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="d-flex row gap-3 justify-content-center">
+                        {favs.length > 0 ? (
+                            favs.map((product) => (
+                                <CardProduct
+                                    key={product.id}
+                                    product={product}
+                                    darkMode={darkMode}
+                                    removeFromFavorites={removeFromFavorites}
+                                />
+                            ))
+                        ) : (
+                            <p>No hay favoritos para el usuario</p>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
