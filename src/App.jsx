@@ -14,6 +14,8 @@ import { NotFound } from "./components/NotFound";
 import { UserProvider } from "./context/UserContext";
 import { CartProvider } from "./context/CartContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
+import AdminDashboard from "./pages/AdminDashboard";
+import { AdminRoute } from "./routes/AdminRoute";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -51,6 +53,9 @@ function App() {
                             <Route path="/orderHistory" element={<OrderHistory darkMode={darkMode}/>} />
                             <Route path="/checkout" element={<Checkout darkMode={darkMode}/>} />
                             <Route path="/wishlist" element={<Wishlist darkMode={darkMode}/>} />
+                        </Route>
+                        <Route element={<AdminRoute />}>
+                            <Route path="/admin" element={<AdminDashboard />} />
                         </Route>
                         <Route path="*" element={<NotFound/>} />
                     </Routes>

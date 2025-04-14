@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { UserContext } from "../context/UserContext";
 import CardProductCart from "./CardProductCart";
+import { Offcanvas } from "bootstrap";
 
 import "../assets/css/Navbar.css";
 
@@ -261,9 +262,31 @@ export default function Navbar({ darkMode, setDarkMode }) {
                             />
                         ))
                     )}
-                    <button className="btn btn-success w-100 mt-3" onClick={() => handleProtectedRoute("/checkout")}>
-                        Finalizar compra
-                    </button>
+                    <button
+                        className="btn btn-success w-100 mt-3"
+                        onClick={() => {
+                            const cartOffcanvasEl = document.getElementById("cartOffcanvas");
+                            if (cartOffcanvasEl) {
+                                const bsOffcanvas = Offcanvas.getInstance(cartOffcanvasEl);
+                                if (bsOffcanvas) {
+                                    bsOffcanvas.hide();
+                                }
+                            }
+
+                            const backdrop = document.querySelector(".offcanvas-backdrop");
+                            if (backdrop) {
+                                document.querySelectorAll(".offcanvas-backdrop").forEach((backdrop) => {
+                                    backdrop.remove();
+                                });
+                            }
+
+                            setTimeout(() => {
+                                handleProtectedRoute("/checkout");
+                            }, 400);
+                            }}
+                    >
+                    Finalizar compra
+                </button>
                 </div>
             </div>
         </>

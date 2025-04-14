@@ -5,6 +5,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { UserContext } from "../context/UserContext";
 import { api } from "../services/api";
 import { toast } from "react-toastify";
+import { Offcanvas } from "bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 
 import "../assets/css/CardProduct.css";
@@ -88,6 +89,15 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
 
     const calculateDiscountedPrice = (price, discount) => {
         return price * (1 - discount / 100);
+    };
+
+    const handleAddToCart = (product) => {
+        addToCart(product);
+        const cartOffcanvasEl = document.getElementById("cartOffcanvas");
+        if (cartOffcanvasEl) {
+            const bsOffcanvas = new Offcanvas(cartOffcanvasEl);
+            bsOffcanvas.show()
+        }
     };
 
     return (
@@ -197,7 +207,7 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
                 </div>
 
                 <button
-                    onClick={() => addToCart(product)}
+                    onClick={() => handleAddToCart(product)}
                     className="btn fw-bold w-100 btn-primary text-white"
                     style={{ height: "42px" }}
                 >
