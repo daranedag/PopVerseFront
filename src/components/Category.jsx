@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import CardProduct from "../components/CardProduct"; // Import your CardProduct component
 import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Category = ({ darkMode }) => {
     const { categoryName } = useParams();
@@ -18,7 +20,8 @@ const Category = ({ darkMode }) => {
                 const response = await api.get("/products");
                 setProducts(response.data);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error al cargar productos:", error);
+                toast.error("Error al cargar productos")
             } finally {
                 setLoading(false);
             }

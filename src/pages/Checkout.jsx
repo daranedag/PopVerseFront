@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 import { jwtDecode } from "jwt-decode";
-import { api } from "../services/api"; 
+import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Checkout() {
     const { token } = useContext(UserContext)
@@ -27,6 +29,7 @@ export default function Checkout() {
         }
         catch (error){
             console.error("Error al decodificar el token:", error);
+            toast.error("Error al decodificar el token");
             return null;
         }
     };
@@ -38,7 +41,7 @@ export default function Checkout() {
         try{
             const userId = await fetchUserId(token);
             if (!userId) {
-                alert("Error al obtener el ID del usuario");
+                toast.error("Error al obtener el ID del usuario");
                 return;
             }
 
@@ -69,13 +72,13 @@ export default function Checkout() {
                 },
             });
 
-            alert("Compra realizada con exito");
+            toast.success("Compra realizada con exito");
             clearCart();
             navigate("/orderHistory");
         }
         catch(error){
             console.error("Error al realizar la compra:", error);
-            alert("Error al realizar la compra");
+            toast.error("Error al realizar la compra");
         }
     };
 

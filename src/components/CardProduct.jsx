@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { UserContext } from "../context/UserContext";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "../assets/css/CardProduct.css";
+
 
 export default function CardProduct({ product, darkMode, removeFromFavorites }) {
     const [isFav, setIsFav] = useState(false);
@@ -47,8 +50,7 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
 
     const handleWishlistClick = async (id) => {
         if (!token) {
-            alert("Por favor inicia sesión para gestionar tu lista de deseos.");
-            navigate("/login");
+            toast.warn("Por favor inicia sesión para gestionar tu lista de deseos.");
             return;
         }
 
@@ -60,7 +62,7 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                alert("Producto eliminado de tu lista de deseos.");
+                toast.success("Producto agregado a tu lista de deseos.");
                 removeFromFavorites(id);
             } else {
                 // Agregar a favoritos
@@ -73,14 +75,14 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
                         },
                     }
                 );
-                alert("Producto agregado a tu lista de deseos.");
+                toast.success("Producto agregado a tu lista de deseos.");
             }
 
             // Alternar el estado de favorito
             setIsFav(!isFav);
         } catch (error) {
             console.error("Error al gestionar el producto en favoritos:", error);
-            alert("Hubo un error al gestionar el producto en tu lista de deseos.");
+            toast.error("Hubo un error al gestionar el producto en tu lista de deseos.");
         }
     };
 
@@ -98,6 +100,7 @@ export default function CardProduct({ product, darkMode, removeFromFavorites }) 
                 height: isMobile ? "370px" : "420px",
             }}
         >
+
             {/* Wishlist Heart */}
             <div
                 onClick={() => handleWishlistClick(product.id)}

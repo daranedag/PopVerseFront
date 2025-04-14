@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import SidebarAccount from "../components/SidebarAccount.jsx";
-import { api } from "../services/api"; 
+import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EditProfile = ({ darkMode }) => {
     const { token } = useContext(UserContext)
@@ -20,9 +22,10 @@ const EditProfile = ({ darkMode }) => {
                 });
                 setFormData(response.data);
             } catch (error) {
-                console.error("Error fetching user data:", error);
+                console.error("Error al cargar los datos del perfil:", error);
+                toast.error("Error al cargar los datos del perfil");
             } finally {
-                setLoading(false); // Finaliza el estado de carga
+                setLoading(false);
             }
         };
 
@@ -48,9 +51,10 @@ const EditProfile = ({ darkMode }) => {
                 },
             });
             setFormData(response.data);
-            alert("Perfil actualizado correctamente");
+            toast.success("Perfil actualizado correctamente");
         } catch (error) {
-            console.error("Error obteniendo datos de usuario:", error);
+            console.error("Error al actualizar el perfil:", error);
+            toast.error("Error al actualizar el perfil");
         }
     };
 

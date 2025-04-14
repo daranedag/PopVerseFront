@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { api } from "../services/api";
 import CardProduct from "../components/CardProduct";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SearchResults = ({ darkMode }) => {
     const location = useLocation();
@@ -15,7 +17,8 @@ const SearchResults = ({ darkMode }) => {
                 const response = await api.get("/products"); // Llamada a la API para obtener todos los productos
                 setProducts(response.data);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error obteniendo products:", error);
+                toast.error("Error obteniendo productos"); 
             }
         };
 

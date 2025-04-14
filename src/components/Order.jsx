@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Order = ({ order, darkMode }) => {
     const [items, setItems] = useState([]);
@@ -20,6 +22,7 @@ const Order = ({ order, darkMode }) => {
             }
             catch (error) {
                 console.error("Error al obtener los detalles de la orden:", error);
+                toast.error("Error al obtener los detalles de la orden");
             }
         };
         fetchOrderItems();

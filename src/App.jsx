@@ -14,7 +14,9 @@ import { NotFound } from "./components/NotFound";
 import { UserProvider } from "./context/UserContext";
 import { CartProvider } from "./context/CartContext";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
 
+import "react-toastify/dist/ReactToastify.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -27,6 +29,17 @@ function App() {
             <UserProvider>
                 <CartProvider>
                     <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        draggable={true}
+                        pauseOnHover={false}
+                        theme={darkMode ? "dark" : "light"}
+                    />
                     <Routes>
                         <Route path="/" element={<Home darkMode={darkMode} />} />
                         <Route path="/login" element={<Login darkMode={darkMode}/>} />

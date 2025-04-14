@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "../assets/css/Login.css";
 
@@ -44,7 +46,7 @@ export default function Login({ darkMode }) {
                                 if (success) {
                                     navigate(from);
                                 } else {
-                                    alert("Credenciales inválidas");
+                                    toast.error("Credenciales inválidas");
                                 }
                                 setSubmitting(false);
                             }}

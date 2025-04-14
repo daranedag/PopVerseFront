@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import SidebarAccount from "../components/SidebarAccount";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const OrderHistory = ({ darkMode })  => {
     const { token } = useContext(UserContext)
@@ -22,7 +24,8 @@ const OrderHistory = ({ darkMode })  => {
                 });
                 setOrders(response.data);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error obteniendo ordenes:", error);
+                toast.error("Error obteniendo ordenes");
             }
             finally {
                 setLoading(false);

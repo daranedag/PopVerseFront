@@ -11,6 +11,8 @@ import Banner from "../components/Banner";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home({ darkMode }) {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -55,7 +57,8 @@ export default function Home({ darkMode }) {
                 setDiscountProducts(discProducts);
                 setRecentProducts(recentProducts);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error obteniendo productos:", error);
+                toast.error("Error obteniendo productos");
             } finally {
                 setLoading(false);
             }

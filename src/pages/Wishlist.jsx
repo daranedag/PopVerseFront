@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import SidebarAccount from "../components/SidebarAccount";
 import { api } from "../services/api"; 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const Wishlist = ({ darkMode }) => {
@@ -23,6 +25,7 @@ const Wishlist = ({ darkMode }) => {
                 setFavs(response.data.favorites);
             } catch (error) {
                 console.error("Error obteniendo favoritos:", error);
+                toast.error("Error obteniendo favoritos");
             } finally {
                 setLoading(false);
             }

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { api } from "../services/api";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "../assets/css/Register.css";
 
@@ -12,10 +14,11 @@ export default function Register({ darkMode }) {
     const handleSubmit = async (values) => {
         try {
             await api.post("/auth/register", values);
-            alert("Usuario registrado exitosamente");
+            toast.success("Usuario registrado exitosamente");
             navigate("/login");
         } catch (error) {
-            console.error("Error registering user:", error);
+            console.error("Error registrando usuario:", error);
+            toast.error("Error registrando usuario");
         }
     };
 
