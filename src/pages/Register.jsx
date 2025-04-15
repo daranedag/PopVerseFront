@@ -6,6 +6,7 @@ import { api } from "../services/api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 import "../assets/css/Register.css";
 
 export default function Register({ darkMode }) {
